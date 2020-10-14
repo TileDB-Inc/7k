@@ -1,0 +1,155 @@
+7kRTT Release Notes
+===================
+
+3.9.3.0 (12 Feb 2020)
+- Changed 7022 record description to 'Sonar Version'.
+
+3.9.2.0 (29 Oct 2019)
+- Added record type 10038 and 10039 for E20
+- Show 7500 (remote control) records when subscribed to.
+
+3.9.1.0 (7 Aug 2019)
+- Added new 7K 3001 record - Target / Contact Output
+
+3.9.0.0 (2 Apr 2019)
+- Support tens of thousands of items in record list.
+
+3.8.2.0 (5 Mar 2019)
+- Don't clear data value fields when pressing a Show Values button.
+
+3.8.1.0 (31 Oct 2018)
+- Fixed infinite 'The parameter is incorrect' messages
+when clicking on empty record display.
+
+3.8.0.0 (19 Sep 2018)
+- SBES: Support singlebeam records 10000, 10018, 10027, and 10049
+based on DFD19250-1B.
+
+3.7.5.2 (19 Sep 2018)
+- Don't display 32-bit unsigned values (like ping number) as hex.
+- Fixed crash when record is too short for vector data.
+
+3.7.5.1 (5 Sep 2018)
+- Made initial window large enough to not have scroll bars.
+- Don't update the record selection when it scrolls out of view.
+It could make things very slow.
+
+3.7.5.0 (8 Aug 2018)
+- Support sending of 1019 command with Vernier settings.
+- User interface was very slow when a long record (e.g. 7038) was displayed
+and new records were coming in from the connection to 7kCenter.
+
+3.7.4.0 (6 Aug 2018)
+- Added 7049 record for Single Element I&Q Data and 1049 command for Element Selection.
+- Fixed 7039 record for I&Q data.
+- Subscribe to 7027 instead of 7017 by default.
+- Support 7019 record with Vernier Processing Data (Raw).
+- Fixed crash when selecting a record after reading the same file.
+- Fixed 1014 command for changing the system mode.
+- Fixed display of 7001 XML text (vector of strings).
+
+3.7.3.0 (16 Mar 2018)
+- Fixed crash when reading 7021 record from file.
+
+3.7.2.0 (2 Mar 2018)
+- Added 1114 command to enable external trigger.
+
+3.7.1.0 (27 Feb 2018)
+- Support reconnecting to 7kCenter.
+
+3.7.0.0 (6 Feb 2018)
+- Added commands for ping sequencing (1121 and 1122).
+
+3.6.9.0 (15 Nov 2017)
+- Added Duty Cycle Method to 7504. Fixed formatting of u16 and i16 fields.
+
+3.6.8.0 (11 Jan 2017)
+- Show empty lines between repeat blocks.
+
+3.6.7.0 (11 Oct 2016)
+- Support older and newer versions of records that have a data size item, like 7027.
+
+3.6.6.0 (5 Oct 2016)
+- Updated 7027 for replacing 7017.
+
+3.6.5.0 (25 May 2016)
+- Add RC1048 (Duty Cycle Limitation Type)
+
+3.6.4.3 (27 Apr 2016)
+- Add definition of RC1502 (Dual Head ping mode - Full Rate or Ping-pong)
+Record display shows lines with changed text in RED, when record being displayed
+is same record number as last.
+
+3.6.4.0 (28 Mar 2016)
+- IDH:  Add support for choosing "Port", "Starboard" or "BOTH" heads for Remote Commands
+(sets enum in cmds RECORD_FRAME; only supported by a few 7kCenter remote commands so far)
+Added new "data type" for the remote command parser "d2r", which is 4/8 byte float which
+will be converted to radians (divide by 57.29577951) before being packed into command.
+
+3.6.3.3 (21 Mar 2016)
+- Updated R1020 defintion to include new(er) fields (Vessel offsets & cable length).
+
+3.6.3.2 (2 Feb 2016)
+- Fix bug in IP Address history combo.  Add option to delete from history, if address fails connection.
+
+3.6.3.1 (18 Jan 2016)
+- Updated decoding of RECORD_FRAME to show state of new IDH (Integrated Dual Head) flag.
+
+3.6.3.0 (4 Dec 2015)
+- TT-11816 Fix IP address control. Previously disconnecting from address 'A',
+typing an new address 'B' and re-starting would re-connect to the old 'A' address.
+IP address edit changed to combo-box. Previously connected addresses are listed
+to select from, saved to the registry and restored on start-up.
+Display Windows error message if connection fails.
+(Re) fixed record filtering for data from .S7K files (wrong record's data was
+diplayed in decoding pane).
+
+3.6.2.0 (28 Oct 2015)
+- TT-11790 Fix record filtering when reading .S7K files.
+Also now (re)applies the filter to all data in the record buffer in online mode.
+Previously filter was only applied as data came in, meaning you could not
+filter records that had already been received.
+
+3.6.1.1 (23 Oct 2015)
+- TT-11603 Fixed for "Write current record to text file", as well as the
+"Dump all shown to text file". The 2nd option previously dumped ALL records in
+the file. It has been changed to dump only those records shown in record scroll
+box (30 max).
+
+3.6.1.0 (25 Sep 2015)
+- Added support for new filtered vernier record 7029
+
+3.6.0.0 (23 Sep 2015)
+- Converted project to Visual Studio 2012.
+- Updated 7503 and 7504 records (max tracker coverage and applied frequency).
+
+3.5.3.5 (24 Aug 2015)
+- Added support for 7058 (calibrated snippets) record.
+
+3.5.3.4 (4 Aug 2015)
+- Add RC1608 (Deck Mode) command.
+
+3.5.3.3 (31 Jul 2015)
+- 7002 updated for effective pulse width; Main window default size reduced.
+
+3.5.3.3 (20 Jul 2015)
+- Support RTK modes and number of satellites in 1003 (Position) record.
+
+3.5.3.2 (14 Jul 2015)
+- Updates for 7610, RC7610 and 7504 records.
+
+3.5.3.0 (1 Jul 2015)
+- Add support for RC7614 (manaul Temperature mode setting) and 7614 (Water Temperature)
+
+3.5.2.3 (12 Jun 2015)
+- Fix TT-11487:  The 7017 record is not handled properly by the 7KRTT tool.
+
+3.5.2.1 (5 May 2015)
+- Removed RC1008 (not used in 7kC)
+- Renamed RC1002 to "Restore Factory Defaults"
+ 
+3.5.1.1 (21 Jan 2015)
+- Added support for 7032 and RC7032 records
+
+3.5.1.0 (7 Jan 2015)
+- Added support for sending RC1026 (Transmit Center Frequency)
