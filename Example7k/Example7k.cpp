@@ -21,6 +21,9 @@ namespace
 	const char NAME_START[] = "<Name";
 	const char DEVID_START[] = "deviceid=\"";
 	const char ENUM_START[] = "enumerator=\"";
+	const char SONARTYPE_START[] = "<SonarType";
+	const char TYPE_START[] = "type=\"";
+	const char TYPE_SBES[] = "sbes";
 
 #pragma pack(push, 1)
 	struct R7500_1050
@@ -34,6 +37,12 @@ namespace
 		R7500 r7500;
 		u32 record_count;
 		u32 record_types[2];
+	};
+
+	struct R7500_10007
+	{
+		R7500 r7500;
+		R7500sub10007 r7500sub10007;
 	};
 #pragma pack(pop)
 }
@@ -69,6 +78,15 @@ void Example7k::RequestConfig()
 	m_socket.SendRecord(7000, 0, 7500, &r7500_1050, sizeof(r7500_1050));
 }
 
+void Example7k::SetSbesSonarModeManual()
+{
+	R7500_10007 r7500_10007 = {};
+	r7500_10007.r7500.rc_id = 10007;
+	r7500_10007.r7500sub10007.system_state = HYDROGRAPHIC;
+	r7500_10007.r7500sub10007.operation_mode = HYDROGRAPHIC_MANUAL;
+
+	m_socket.SendRecord(7000, 0, 7500, &r7500_10007, sizeof(r7500_10007));
+}
 
 bool Example7k::ReceiveLoop()
 {
@@ -94,6 +112,10 @@ bool Example7k::ReceiveLoop()
 
 		case 7027:
 			HandleDetections(pData, dataSize);
+			break;
+
+		case 10018:
+			HandleSbesEchogram(pData, dataSize);
 			break;
 		}
 	}
@@ -147,7 +169,34 @@ bool Example7k::HandleConfig(const u8* pData, size_t dataSize)
 			continue;
 		u16 enumerator = (u16) std::atoi(pEnum + sizeof(ENUM_START) - 1);
 
-		Subscribe(deviceId, enumerator);
+		// Get sonar type from XML
+		const char* pSonarType = std::strstr(pInfo, SONARTYPE_START);
+		if (!pSonarType)
+			continue;
+		const char* pType = std::strstr(pSonarType, TYPE_START);
+		if (!pType)
+			continue;
+
+		// Extract type of sonar
+		pType = pType + sizeof(TYPE_START) - 1;
+		const char* pTypeEnd = std::strstr(pType, "\"");
+		if (!pTypeEnd)
+			continue;
+		size_t count = (size_t)(pTypeEnd - pType);
+		if (std::strncmp(pType, TYPE_SBES, count) == 0)
+		{
+			// This is a SBES sonar
+			SubscribeSbes(deviceId, 1); // Subscribe for Echogram data on Channel 1
+			SubscribeSbes(deviceId, 2); // Subscribe for Echogram data on Channel 2
+
+			// Try to set sonar mode to manual
+			SetSbesSonarModeManual();
+		}
+		else
+		{
+			// MUST be MBES sonar ("0" for bathy, "1" for forward looker)
+			Subscribe(deviceId, enumerator);
+		}
 	}
 
 	return true;
@@ -161,6 +210,18 @@ void Example7k::Subscribe(u32 deviceId, u16 enumerator)
 	r7500_1051.record_count = 2;
 	r7500_1051.record_types[0] = 7027;  // Raw Detections
 	r7500_1051.record_types[1] = 7011;  // Image Data
+
+	m_socket.SendRecord(deviceId, enumerator, 7500, &r7500_1051,
+		sizeof(r7500_1051));
+}
+
+void Example7k::SubscribeSbes(u32 deviceId, u16 enumerator)
+{
+	R7500_1051 r7500_1051 = {};
+	r7500_1051.r7500.rc_id = 1051;  // Record Subscription
+	r7500_1051.record_count = 1;
+	r7500_1051.record_types[0] = 10018;  //Echogram data
+	
 
 	m_socket.SendRecord(deviceId, enumerator, 7500, &r7500_1051,
 		sizeof(r7500_1051));
@@ -205,6 +266,30 @@ bool Example7k::HandleDetections(const u8* pData, size_t dataSize)
 	return true;
 }
 
+bool Example7k::HandleSbesEchogram(const u8* pData, size_t dataSize)
+{
+	size_t idx = 0;
+
+	// The size of the 10018 header part is fixed
+	R10018 r10018;
+	if (idx + sizeof(r10018) > dataSize)
+		return false;
+	std::memcpy(&r10018, pData + idx, sizeof(r10018));
+	idx += sizeof(r10018);
+
+	if (r10018.bits_per_sample != 32)
+		return false;
+	
+	std::vector <u32> r10018data(r10018.sample_count); // Vector for echogram data
+	std::memcpy(r10018data.data(), pData + idx, r10018.sample_count);
+
+	// Print ping number and size
+	std::printf("Ping %u, number of samples %u\n",
+		(unsigned)r10018.ping_number,
+		(unsigned)r10018.sample_count);
+
+	return true;
+}
 
 bool Example7k::HandleImage(const u8* pData, size_t dataSize)
 {

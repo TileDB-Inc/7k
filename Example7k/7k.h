@@ -1156,6 +1156,20 @@ struct R7500sub10005
 };
 
 // SB operation modes
+enum SBESSystemStates
+{
+	STANDBY = 10,
+	HYDROGRAPHIC = 20,
+};
+enum SBESOperationModes
+{
+	STANDBY_CONFIGURATION = 10,
+	TEST = 11,	
+	BAR_CHECK = 12,
+	HYDROGRAPHIC_AUTO = 20,
+	HYDROGRAPHIC_SEMIAUTO = 21,
+	HYDROGRAPHIC_MANUAL = 22,
+};
 struct R7500sub10007
 {
 	u32 system_state;

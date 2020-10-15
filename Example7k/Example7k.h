@@ -28,8 +28,11 @@ private:
 	bool ReceiveLoop();
 	bool HandleConfig(const u8* pData, size_t dataSize);
 	void Subscribe(u32 deviceId, u16 enumerator);
+	void SubscribeSbes(u32 deviceId, u16 enumerator);
 	bool HandleDetections(const u8* pData, size_t dataSize);
+	bool HandleSbesEchogram(const u8* pData, size_t dataSize);
 	bool HandleImage(const u8* pData, size_t dataSize);
+	void SetSbesSonarModeManual();
 
 private:
 	TcpSocket7k m_socket;
