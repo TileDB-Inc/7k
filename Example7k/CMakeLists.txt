@@ -1,0 +1,5 @@
+add_executable(example7k Example7k.cpp TcpSocket7k.cpp NetworkSocket.cpp)
+if(WIN32)
+  target_link_libraries(example7k wsock32 WS2_32.lib)
+endif()
+install(TARGETS example7k DESTINATION bin)

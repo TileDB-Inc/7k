@@ -319,3 +319,9 @@ bool Example7k::HandleImage(const u8* pData, size_t dataSize)
 
 	return true;
 }
+
+int main(void) {
+    Example7k example;
+    example.Run("127.0.0.1");
+    return 0;
+}

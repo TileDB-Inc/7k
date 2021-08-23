@@ -13,6 +13,28 @@ C++ source code in a Microsoft Visual Studio project.
 The included example is a command line application that connects as a TCP client to the sonar.
 It subscribes to a couple of records, and prints out some items from the ping data.
 
+### Installation
+
+This requires a [cmake](https://cmake.org/) installation of 3.0 or above.
+
+#### Windows
+
+Either open the project with Visual Studio Code or run the steps as per Linux below and then execute the function by clicking on `example7k.exe`
+
+#### Linux
+
+```
+mkdir build && cd build
+cmake ..
+make
+cd Example7K
+./example7k
+```
+
+#### Mac
+
+As above 
+
 ## 7k Utilities
 
 ### 7kRTT

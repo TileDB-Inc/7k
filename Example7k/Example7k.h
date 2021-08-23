@@ -16,6 +16,7 @@
 
 #include "TcpSocket7k.h"
 
+int main(void);
 
 class Example7k
 {

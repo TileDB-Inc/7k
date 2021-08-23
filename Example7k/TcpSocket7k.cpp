@@ -11,6 +11,7 @@
 #include "TcpSocket7k.h"
 
 #include <cassert>
+#include <cstring>
 
 #include "7k.h"
 
